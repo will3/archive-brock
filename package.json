@@ -17,8 +17,13 @@
   },
   "homepage": "https://github.com/will3/brock#readme",
   "dependencies": {
+    "grunt": "^0.4.5",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "three": "^0.72.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-watch": "^0.6.1"
   }
 }
