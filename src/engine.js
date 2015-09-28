@@ -1,12 +1,15 @@
 var THREE = require('three');
 var _ = require('lodash');
-var drawing = require('./drawing')();
+var Drawing = require('./systems/drawing');
+var Physics = require('./systems/physics');
+var types = require('./types');
 
 var Engine = function() {
     var engine = {};
 
     var systems = {
-        'drawing': drawing
+        'drawing': new Drawing(),
+        'physics': new Physics()
     };
 
     var use = function(type, system) {
@@ -17,17 +20,24 @@ var Engine = function() {
     var entityMap = {};
     var componentMap = {};
 
-    var types = {};
-
     var register = function(type, constructor) {
         types[type] = constructor;
     };
 
-    var addEntity = function(def) {
+    var addEntity = function() {
         var entity = {
             id: THREE.Math.generateUUID(),
             setObject3D: function(object) {
                 engine.setObject3D(this, object);
+            },
+            getComponents: function() {
+                return getComponents(this);
+            },
+            getComponent: function(type) {
+                return getComponent(this, type);
+            },
+            attachComponent: function(type) {
+                return attachComponent(type);
             }
         };
 
@@ -36,10 +46,9 @@ var Engine = function() {
             components: []
         };
 
-        var components = _.map(def, function(componentDef) {
-            var component = new types[componentDef]();
-            attachComponent(entity, component);
-        });
+        if (getComponent(entity, 'transform') === undefined) {
+            attachComponent(entity, 'transform');
+        }
 
         return entity;
     };
@@ -55,6 +64,10 @@ var Engine = function() {
     };
 
     var attachComponent = function(entity, component) {
+        if (_.isString(component)) {
+            component = new types[component]();
+        }
+
         if (component.id === undefined) {
             component.id = THREE.Math.generateUUID();
         }
@@ -69,18 +82,16 @@ var Engine = function() {
         }
         map[component.id] = component;
         entityMap[entity.id].components.push(component);
+
+        return component;
     };
 
     var setObject3D = function(entity, object) {
-        var drawing = getComponent(entity, 'drawing');
-        if (drawing === undefined) {
-            attachComponent(entity, {
-                type: 'drawing',
-                renderState: object
-            });
-        } else {
-            drawing.renderState = object;
+        var renderState = getComponent(entity, 'renderState');
+        if (renderState === undefined) {
+            renderState = attachComponent(entity, 'renderState');
         }
+        renderState.object = object;
     };
 
     var removeEntity = function(entity) {
@@ -92,7 +103,7 @@ var Engine = function() {
     var interval = function() {
         for (var type in systems) {
             var system = systems[type];
-            system.tick(componentMap[type]);
+            system.tick(componentMap[system.componentType]);
         }
 
         setTimeout(interval, 1000 / frameRate);
@@ -107,4 +118,6 @@ var Engine = function() {
     return engine;
 };
 
-module.exports = Engine;
+module.exports = function() {
+    return new Engine();
+};

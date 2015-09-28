@@ -11,5 +11,6 @@ window.onload = function() {
     });
     var object = new THREE.Mesh(geometry, material);
 
-    engine.setObject3D(player, object);
+    player.setObject3D(object);
+    var rigidBody = player.attachComponent('rigidBody');
 };

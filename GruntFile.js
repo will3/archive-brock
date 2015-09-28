@@ -1,31 +1,37 @@
 module.exports = function(grunt) {
 
-  grunt.initConfig({
-    browserify: {
-      avatar: {
-        files: {
-          'avatar/bundle.js': ['avatar/app.js']
+    grunt.initConfig({
+        browserify: {
+            app: {
+                files: {
+                    'app/bundle.js': ['app/app.js']
+                }
+            }
+        },
+        jshint: {
+            files: ['Gruntfile.js', 'src/**/*.js'],
+            options: {
+                globals: {
+                    jQuery: true
+                }
+            }
+        },
+        mochaTest: {
+            test: {
+                src: ['src/test/**/*.js']
+            }
+        },
+        watch: {
+            files: ['**/*.js'],
+            tasks: ['browserify', 'jshint', 'mochaTest']
         }
-      }
-    },
-    jshint: {
-      files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-      options: {
-        globals: {
-          jQuery: true
-        }
-      }
-    },
-    watch: {
-      files: ['**/*.js'],
-      tasks: ['browserify', 'jshint']
-    }
-  });
+    });
 
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-mocha-test');
 
-  grunt.registerTask('default', ['browserify', 'jshint']);
+    grunt.registerTask('default', ['browserify', 'jshint', 'mochaTest']);
 
 };
