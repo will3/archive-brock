@@ -1,32 +1,43 @@
 {
-  "name": "brock",
-  "version": "1.0.0",
-  "description": "brock engine",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/will3/brock.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/will3/brock/issues"
-  },
-  "homepage": "https://github.com/will3/brock#readme",
-  "dependencies": {
-    "grunt": "^0.4.5",
-    "jquery": "^2.1.4",
-    "lodash": "^3.10.1",
-    "three": "^0.72.0"
-  },
-  "devDependencies": {
-    "chai": "^3.3.0",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-test": "^0.12.7",
-    "mocha": "^2.3.3"
-  }
+    "name": "brock",
+    "version": "1.0.0",
+    "description": "brock engine",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "browserify ./app/app.js -o ./app/bundle.js --exclude three"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/will3/brock.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/will3/brock/issues"
+    },
+    "homepage": "https://github.com/will3/brock#readme",
+    "dependencies": {
+        "grunt": "^0.4.5",
+        "jquery": "^2.1.4",
+        "lodash": "^3.10.1",
+        "three": "^0.72.0"
+    },
+    "devDependencies": {
+        "browserify": "^11.2.0",
+        "browserify-shim": "^3.8.10",
+        "chai": "^3.3.0",
+        "grunt-contrib-jshint": "^0.11.3",
+        "grunt-contrib-watch": "^0.6.1",
+        "grunt-mocha-test": "^0.12.7",
+        "mocha": "^2.3.3"
+    },
+    "browserify-shim": {
+        "lodash": "global:_",
+        "jquery": "global:$",
+        "three": "global:THREE"
+    },
+    "browserify": {
+        "transform": ["browserify-shim"]
+    }
 }

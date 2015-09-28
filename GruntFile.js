@@ -6,6 +6,11 @@ module.exports = function(grunt) {
                 files: {
                     'app/bundle.js': ['app/app.js']
                 }
+            },
+            options: {
+                browserifyOptions: {
+                    debug: true
+                }
             }
         },
         jshint: {
@@ -23,7 +28,7 @@ module.exports = function(grunt) {
         },
         watch: {
             files: ['**/*.js'],
-            tasks: ['browserify', 'jshint', 'mochaTest']
+            tasks: ['jshint', 'mochaTest']
         }
     });
 
@@ -32,6 +37,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-test');
 
-    grunt.registerTask('default', ['browserify', 'jshint', 'mochaTest']);
+    grunt.registerTask('default', ['jshint', 'mochaTest']);
 
 };

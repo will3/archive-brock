@@ -1,0 +1,19 @@
+{
+  "name": "brock",
+  "version": "0.0.0",
+  "homepage": "https://github.com/will3/brock",
+  "authors": [
+    "will"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

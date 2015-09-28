@@ -45,12 +45,20 @@ var Drawing = function() {
                     objectMap[id] = component.object;
                 }
             }
+
+            if (component.object !== null) {
+                var transform = component.entity.transform;
+                component.object.position.copy(transform.position);
+                component.object.rotation.copy(transform.rotation);
+                component.object.scale.copy(transform.scale);
+            }
         }
     };
 
     return {
         componentType: ['renderState'],
-        tick: tick
+        tick: tick,
+        renderer: renderer
     };
 };
 

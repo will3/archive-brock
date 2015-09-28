@@ -24,11 +24,22 @@ var Engine = function() {
         types[type] = constructor;
     };
 
-    var addEntity = function() {
+    var addEntity = function(params) {
+        params = params || {};
+
         var entity = {
             id: THREE.Math.generateUUID(),
             setObject3D: function(object) {
-                engine.setObject3D(this, object);
+                var renderState = this.getComponent('renderState');
+                if (renderState === undefined) {
+                    renderState = this.attachComponent('renderState');
+                }
+
+                renderState.object = object;
+            },
+            applyForce: function(force) {
+                var rigidBody = this.getComponent('rigidBody');
+                rigidBody.applyForce(force);
             },
             getComponents: function() {
                 return getComponents(this);
@@ -37,7 +48,7 @@ var Engine = function() {
                 return getComponent(this, type);
             },
             attachComponent: function(type) {
-                return attachComponent(type);
+                return attachComponent(this, type);
             }
         };
 
@@ -46,8 +57,16 @@ var Engine = function() {
             components: []
         };
 
-        if (getComponent(entity, 'transform') === undefined) {
-            attachComponent(entity, 'transform');
+        entity.transform = attachComponent(entity, 'transform');
+
+        if (params.object !== undefined) {
+            var renderState = attachComponent(entity, 'renderState');
+            renderState.object = params.object;
+        }
+
+        if (params.mass !== undefined) {
+            var rigidBody = attachComponent(entity, 'rigidBody');
+            rigidBody.mass = params.mass;
         }
 
         return entity;
@@ -83,15 +102,9 @@ var Engine = function() {
         map[component.id] = component;
         entityMap[entity.id].components.push(component);
 
-        return component;
-    };
+        component.entity = entity;
 
-    var setObject3D = function(entity, object) {
-        var renderState = getComponent(entity, 'renderState');
-        if (renderState === undefined) {
-            renderState = attachComponent(entity, 'renderState');
-        }
-        renderState.object = object;
+        return component;
     };
 
     var removeEntity = function(entity) {
@@ -113,7 +126,9 @@ var Engine = function() {
 
     engine.register = register;
     engine.addEntity = addEntity;
-    engine.setObject3D = setObject3D;
+    engine.getRenderer = function() {
+        return systems.drawing.renderer;
+    };
 
     return engine;
 };
